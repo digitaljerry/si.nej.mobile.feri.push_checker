@@ -10,7 +10,7 @@ $file = "sentNotifications.ser";
 $cookieFileLocation = 'cookie.txt';
 define('MAGPIE_CACHE_AGE', 60);
 
-$skipWelzer = true;
+$skipWelzer = false;
 $sendPush = true;
 $newData = false;
 $alreadyLoggedIn = false;
