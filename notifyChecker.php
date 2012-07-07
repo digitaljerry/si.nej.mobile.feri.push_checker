@@ -73,7 +73,7 @@ foreach ($rss->items as $item ) {
 			
 			$push = array(
 				'channel' => $category,
-				'payload' => '{"badge":"1","alert":'.htmlentities($title).'}'
+				'payload' => '{"badge":"1","sound":"default","alert":'.htmlentities($title).'}'
 			);
 		
 			$ch = curl_init(); 
