@@ -1,9 +1,9 @@
 <?php
 
-$username = 'jernejz@gmail.com';
-$password = 'f3ri';
+$username = 'pusher';
+$password = 'password';
 $url = 'http://www.feri.uni-mb.si/rss/novice.xml';
-$app_key = 'zGbO2wA7ngswO5MwshLDuIVjjRQx9mrh';
+$app_key = 'PilRZcKOrnAFPXt6DnCtePJC2rONvR0W';
 $cloud_login_url = 'https://api.cloud.appcelerator.com/v1/users/login.json?key=' . $app_key;
 $cloud_notify_url = 'https://api.cloud.appcelerator.com/v1/push_notification/notify.json?key=' . $app_key;
 $file = "sentNotifications.ser";
