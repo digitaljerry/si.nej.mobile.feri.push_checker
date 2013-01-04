@@ -6,7 +6,7 @@
 $username = 'pusher';
 $password = 'password';
 $url = 'http://www.feri.uni-mb.si/rss/novice.xml';
-$app_key = 'PilRZcKOrnAFPXt6DnCtePJC2rONvR0W';
+$app_key = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
 $cloud_login_url = 'https://api.cloud.appcelerator.com/v1/users/login.json?key=' . $app_key;
 $cloud_notify_url = 'https://api.cloud.appcelerator.com/v1/push_notification/notify.json?key=' . $app_key;
 $file = "sentNotifications.ser";
@@ -18,6 +18,8 @@ $sendPush = true;
 $newData = false;
 $alreadyLoggedIn = false;
 chdir(dirname(__FILE__));
+
+require('./config.inc');
 
 $fh = fopen($file, 'r');
 $sent = unserialize(fread($fh, filesize($file)));
