@@ -1,5 +1,8 @@
 <?php
 
+// spremembe govorilnih ur: 118
+// dnevna obvestila: 130
+
 $username = 'pusher';
 $password = 'password';
 $url = 'http://www.feri.uni-mb.si/rss/novice.xml';
@@ -23,29 +26,48 @@ fclose($fh);
 require('./magpierss-0.72/rss_fetch.inc');
 $rss = fetch_rss($url);
 
+if ( $argv[1] == 'test' ) {
+	$rss->items[] = array(
+		'title' => 'Test čšž ČŠŽ ' . rand(1, 100),
+		'link' => 'http://www.google.com',
+		'forced' => 'true',
+		'channel' => $argv[2]
+	);
+}
+
 echo "Reading ... ", $rss->channel['title'], PHP_EOL;
 foreach ($rss->items as $item ) {
 	$title = $item['title'];
 	$url   = $item['link'];
+	
+	if ( !isset($item['forced']) )
+		$item['forced'] = 'false';
+	$forced = $item['forced'];
 	
 	// testting
 	if ( $skipWelzer == true && $title == 'Govorilne ure T.Welzer' )
 		continue;
 	
 	$already_sent = false;
-	foreach ($sent as $sent_item ) {
-		if ( $sent_item == $url )
-			$already_sent = true;
+	if ( $forced != 'true' ) {
+		foreach ($sent as $sent_item ) {
+			if ( $sent_item == $url )
+				$already_sent = true;
+		}
 	}
 	
 	if ( $already_sent == false ) {
-		$sent[] = $url;
+		if ( $forced != 'true' )
+			$sent[] = $url;
 		$newData = true;
 		
 		echo 'New notification: ' . $title . PHP_EOL;
 		
 		$loc = strpos($url, 'oce=');
-		$category = substr($url, $loc+4);
+		if ( isset($item['channel']) )
+			$category = $item['channel'];
+		else
+			$category = substr($url, $loc+4);
 		
 		// do the sending
 		if ($sendPush == true) {
@@ -61,6 +83,7 @@ foreach ($rss->items as $item ) {
 				curl_setopt($ch, CURLOPT_HEADER, TRUE); 
 				curl_setopt($ch, CURLOPT_NOBODY, TRUE); // remove body 
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+				curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
 				curl_setopt($ch,CURLOPT_COOKIEJAR,$cookieFileLocation); 
 				curl_setopt($ch,CURLOPT_COOKIEFILE,$cookieFileLocation);
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $login);
@@ -73,7 +96,7 @@ foreach ($rss->items as $item ) {
 			
 			$push = array(
 				'channel' => $category,
-				'payload' => '{"badge":"1","sound":"default","alert":'.htmlentities($title).'}'
+				'payload' => '{"sound":"default","alert":"'.$title.'"}'
 			);
 		
 			$ch = curl_init(); 
@@ -81,6 +104,7 @@ foreach ($rss->items as $item ) {
 			curl_setopt($ch, CURLOPT_HEADER, TRUE); 
 			curl_setopt($ch, CURLOPT_NOBODY, TRUE); // remove body 
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+			curl_setopt($ch, CURLOPT_ENCODING, 'UTF-8');
 			curl_setopt($ch,CURLOPT_COOKIEJAR,$cookieFileLocation); 
 			curl_setopt($ch,CURLOPT_COOKIEFILE,$cookieFileLocation);
 			curl_setopt($ch, CURLOPT_POSTFIELDS, $push);
